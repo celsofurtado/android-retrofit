@@ -85,32 +85,48 @@ class MainActivity : AppCompatActivity() {
         val destinationCall = retrofit.create(DestinationCall::class.java)
         val call = destinationCall.getDestinations()
 
-        call.enqueue(object : Callback<List<DestinationModel>>{
+        call.enqueue(object : Callback<List<DestinationModel>> {
             override fun onFailure(call: Call<List<DestinationModel>>, t: Throwable) {
-
-                Log.d("MainActivity", t.message.toString())
-                Toast.makeText(applicationContext, "Falhou", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "erro!!", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(
                 call: Call<List<DestinationModel>>,
                 response: Response<List<DestinationModel>>
             ) {
-
-                response.body().let {
-                    destinos = it
-                    recentDestinationAdapter.updateDestinationList(destinos!!)
-                    topDestinationAdapter.updateTopDestinationList(destinos!!)
-                    Log.d("XXX", destinos!!.size.toString())
-                }
-
-                if (response.code() != 200) {
-                    Toast.makeText(applicationContext, "Funcionou", Toast.LENGTH_LONG).show()
-                    return
-                }
+                destinos = response.body()
+                recentDestinationAdapter.updateDestinationList(destinos!!)
+                topDestinationAdapter.updateTopDestinationList(destinos!!)
             }
 
         })
+
+//        call.enqueue(object : Callback<List<DestinationModel>>{
+//            override fun onFailure(call: Call<List<DestinationModel>>, t: Throwable) {
+//
+//                Log.d("MainActivity", t.message.toString())
+//                Toast.makeText(applicationContext, "Falhou", Toast.LENGTH_LONG).show()
+//            }
+//
+//            override fun onResponse(
+//                call: Call<List<DestinationModel>>,
+//                response: Response<List<DestinationModel>>
+//            ) {
+//
+//                response.body().let {
+//                    destinos = it
+//                    recentDestinationAdapter.updateDestinationList(destinos!!)
+//                    topDestinationAdapter.updateTopDestinationList(destinos!!)
+//                    Log.d("XXX", destinos!!.size.toString())
+//                }
+//
+//                if (response.code() != 200) {
+//                    Toast.makeText(applicationContext, "Funcionou", Toast.LENGTH_LONG).show()
+//                    return
+//                }
+//            }
+//
+//        })
 
         //return recentDestinations
         Log.d("XXX", "Return " + destinos!!.size.toString())
