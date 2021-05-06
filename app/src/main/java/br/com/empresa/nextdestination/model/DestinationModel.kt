@@ -6,5 +6,6 @@ data class DestinationModel (
     var nomeCidade: String,
     var siglaEstado: String,
     var descricao: String,
-    var valor: Double
+    var valor: Double,
+    var urlFotoCapa: String
 )

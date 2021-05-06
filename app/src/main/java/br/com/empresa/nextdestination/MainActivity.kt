@@ -10,14 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.empresa.nextdestination.adapter.RecentDestinationAdapter
 import br.com.empresa.nextdestination.api.DestinationCall
-import br.com.empresa.nextdestination.constants.ApiConstants
 import br.com.empresa.nextdestination.model.DestinationModel
 import br.com.empresa.nextdestination.adapter.TopDestinationAdapter
+import br.com.empresa.nextdestination.api.RetrofitApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,18 +40,10 @@ class MainActivity : AppCompatActivity() {
         setToptDestinations()
 
         cardProfile.setOnClickListener {
-            val i = Intent(this, ProfileActivity::class.java)
+            val i = Intent(this, DestinationDetailActivity::class.java)
             startActivity(i)
         }
     }
-
-//    override fun onResume() {
-//
-//        setRecentDestinations()
-//        setToptDestinations()
-//
-//        super.onResume()
-//    }
 
     fun setRecentDestinations() {
         recentDestinationAdapter =
@@ -75,17 +65,14 @@ class MainActivity : AppCompatActivity() {
 
         var destinos : List<DestinationModel>? = listOf<DestinationModel>()
 
-        // Retrofit Builder
-        val retrofit = Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = RetrofitApi.getRetrofit()
 
         // Instancia da interface
         val destinationCall = retrofit.create(DestinationCall::class.java)
         val call = destinationCall.getDestinations()
 
         call.enqueue(object : Callback<List<DestinationModel>> {
+
             override fun onFailure(call: Call<List<DestinationModel>>, t: Throwable) {
                 Toast.makeText(applicationContext, "erro!!", Toast.LENGTH_LONG).show()
             }
@@ -95,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                 response: Response<List<DestinationModel>>
             ) {
                 destinos = response.body()
+                Log.d("Teste", destinos.toString())
                 recentDestinationAdapter.updateDestinationList(destinos!!)
                 topDestinationAdapter.updateTopDestinationList(destinos!!)
             }
